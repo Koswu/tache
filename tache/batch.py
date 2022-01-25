@@ -51,7 +51,8 @@ class Batch(object):
             miss_cache_mapping = dict((key_lookup[arg], v) for (arg, v) in miss_mapping.items())
             self._backend.mset(miss_cache_mapping, self._timeout)
             mapping.update(miss_mapping)
-        return [mapping[arg] for arg in args]
+        from .magic_cached_object import MagicCachedObject
+        return [MagicCachedObject(self, [arg], dict(), mapping[arg]) for arg in args]
 
     def invalidate(self, *args):
         cache_keys = self._keys_func(self._namespace, self._func, *args)

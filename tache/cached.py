@@ -44,7 +44,8 @@ class Cached(object):
             result = self._func(*args, **kwargs)
             if self._should_cache_fn(result):
                 self._backend.set(cache_key, result, self._timeout)
-        return result
+        from .magic_cached_object import MagicCachedObject
+        return MagicCachedObject(self, args, kwargs, result)
 
     def invalidate(self, *args, **kwargs):
         cache_key = self._key_func(self._namespace, self._func, *args, **kwargs)
